@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор ПЗ1 | Набока А.О. (ПЗПІ-24-1)</title>
+    <style>
+        :root { --primary: #4F46E5; --bg: #F3F4F6; --card: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { text-align: center; color: #1F2937; margin-bottom: 30px; }
+
+        /* Header Style */
+        header { text-align: center; margin-bottom: 40px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { margin: 0 0 10px 0; color: var(--primary); }
+        .student-info { font-size: 1.1rem; font-weight: bold; color: #374151; }
+        .app-desc { margin-top: 10px; font-style: italic; color: #6B7280; }
+
+        /* Grid Layout */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+
+        /* Card Style */
+        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card h2 { margin-top: 0; color: var(--primary); font-size: 1.2rem; border-bottom: 2px solid #E5E7EB; padding-bottom: 10px; }
+
+        /* Forms */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #D1D5DB; border-radius: 6px; box-sizing: border-box; }
+        button { wudth: 100%; background-color: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.2s; }
+        button:hover { background-color: #4338CA; }
+
+        /* Results */
+        .result-box { margin-top: 15px; background: #EEF2FF; padding: 10px; border-radius: 6px; border: 1px solid #C7D2FE; font-family: monospace; word-break: break-all; }
+        .result-label { font-size: 0.8rem; color: #6B7280; font-weight: bold; }
+
+        /* Table for ASCII */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        th, td { border: 1px solid #E5E7EB; padding: 8px; text-align: center; }
+        th { background-color: #F9FAFB; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Практична робота №1</h1>
+        <h1>Автоматизований розрахунок</h1>
+        <div class="student-info">Виконала: студентка гр. ПЗПІ-24-1 Набока А.О. (Варіант 17)</div>
+        <div class="app-desc">Реалізовано програмний комплекс для автоматизації переведення чисел між системами числення, виконання двійкової арифметики, кодування IEEE 754 та ASCII.</div>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <h2>1. Системи числення</h2>
+            <div class="form-group">
+                <label>Число:</label>
+                <input type="text" id="num1" placeholder="Наприклад: 183" value="183">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div style="flex:1">
+                    <label>З системи:</label>
+                    <select id="baseFrom"><option value="10">10</option><option value="2">2</option><option value="8">8</option><option value="16">16</option></select>
+                </div>
+                <div style="flex:1">
+                    <label>В систему:</label>
+                    <select id="baseTo"><option value="2">2</option><option value="8">8</option><option value="10">10</option><option value="16">16</option></select>
+                </div>
+            </div>
+            <button onclick="convertInt()">Перевести</button>
+            <div class="result-box" id="res1">Результат з'явиться тут</div>
+        </div>
+
+        <div class="card">
+            <h2>2. Дробові числа</h2>
+            <div class="form-group">
+                <label>Дробове число:</label>
+                <input type="text" id="fracNum" placeholder="Наприклад: 11100.01 або 0.563" value="11100.01">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div style="flex:1">
+                    <label>З системи:</label>
+                    <select id="fracBaseFrom"><option value="2">2</option><option value="8">8</option><option value="10">10</option><option value="16">16</option></select>
+                </div>
+                <div style="flex:1">
+                    <label>В систему:</label>
+                    <select id="fracBaseTo"><option value="10">10</option><option value="2">2</option><option value="8">8</option><option value="16">16</option></select>
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Точність (знаків):</label>
+                <input type="number" id="fracPrecision" value="5" min="1" max="20">
+            </div>
+            <button onclick="convertFraction()">Перевести дріб</button>
+            <div class="result-box" id="resFrac">Результат</div>
+        </div>
+
+        <div class="card">
+            <h2>3. Двійкова арифметика</h2>
+            <div style="display: flex; gap: 10px;">
+                <div style="flex:1">
+                    <label>Число A (DEC):</label>
+                    <input type="number" id="mathA" value="178">
+                </div>
+                <div style="flex:1">
+                    <label>Число B (DEC):</label>
+                    <input type="number" id="mathB" value="35">
+                </div>
+            </div>
+            <label>Дія:</label>
+            <select id="mathOp">
+                <option value="add">Додавання (+)</option>
+                <option value="sub">Віднімання (-)</option>
+                <option value="mul">Множення (*)</option>
+            </select>
+            <button onclick="calcMath()">Обчислити</button>
+            <div class="result-box" id="resMath">
+                <span class="result-label">DEC:</span> <span id="resMathDec">-</span><br>
+                <span class="result-label">BIN:</span> <span id="resMathBin">-</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>4. Формат IEEE 754 (32-bit)</h2>
+            <div class="form-group">
+                <label>Дробове число:</label>
+                <input type="number" step="any" id="floatNum" value="28.25">
+            </div>
+            <button onclick="convertIEEE()">Конвертувати</button>
+            <div class="result-box">
+                <div class="result-label">Binary (Sign | Exp | Mantissa):</div>
+                <div id="resIEEEBin" style="letter-spacing: 1px;">-</div>
+                <div class="result-label" style="margin-top:5px;">HEX:</div>
+                <div id="resIEEEHex">-</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>5. ASCII Кодер</h2>
+            <div class="form-group">
+                <label>Текст (Прізвище):</label>
+                <input type="text" id="asciiText" value="Naboka">
+            </div>
+            <button onclick="encodeASCII()">Закодувати</button>
+            <div id="asciiTableContainer"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Функція для відправки запитів на сервер
+    async function postData(url, data) {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+            const err = await response.json();
+            alert("Помилка: " + err.detail);
+            throw new Error(err.detail);
+        }
+        return response.json();
+    }
+
+    // 1. Конвертація цілих
+    async function convertInt() {
+        const data = {
+            number: document.getElementById('num1').value,
+            from_base: int(document.getElementById('baseFrom').value),
+            to_base: int(document.getElementById('baseTo').value)
+        };
+        const res = await postData('/api/convert_integer', data);
+        document.getElementById('res1').innerText = res.result;
+    }
+
+    // 2. Дробові числа
+    async function convertFraction() {
+        const data = {
+            number: document.getElementById('fracNum').value,
+            from_base: int(document.getElementById('fracBaseFrom').value),
+            to_base: int(document.getElementById('fracBaseTo').value),
+            precision: int(document.getElementById('fracPrecision').value)
+        };
+        const res = await postData('/api/convert_fraction', data);
+        document.getElementById('resFrac').innerText = res.result;
+    }
+
+    // 2. Арифметика
+    async function calcMath() {
+        const data = {
+            a: int(document.getElementById('mathA').value),
+            b: int(document.getElementById('mathB').value),
+            operation: document.getElementById('mathOp').value
+        };
+        const res = await postData('/api/binary_arithmetic', data);
+        document.getElementById('resMathDec').innerText = res.result_dec;
+        document.getElementById('resMathBin').innerText = res.result_bin;
+    }
+
+    // 3. IEEE 754
+    async function convertIEEE() {
+        const data = { number: parseFloat(document.getElementById('floatNum').value) };
+        const res = await postData('/api/ieee754', data);
+        document.getElementById('resIEEEBin').innerText = res.binary;
+        document.getElementById('resIEEEHex').innerText = res.hex;
+    }
+
+    // 4. ASCII
+    async function encodeASCII() {
+        const data = { text: document.getElementById('asciiText').value };
+        const res = await postData('/api/ascii', data);
+
+        let html = '<table><thead><tr><th>Char</th><th>DEC</th><th>HEX</th><th>BIN</th></tr></thead><tbody>';
+        res.data.forEach(item => {
+            html += `<tr><td><b>${item.char}</b></td><td>${item.dec}</td><td>${item.hex}</td><td>${item.bin}</td></tr>`;
+        });
+        html += '</tbody></table>';
+        document.getElementById('asciiTableContainer').innerHTML = html;
+    }
+
+    function int(val) { return parseInt(val, 10); }
+</script>
+
+</body>
+</html>
